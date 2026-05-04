@@ -17,7 +17,7 @@ FuelTrack is a modern, beautifully designed web application (and Progressive Web
 - **Routing**: React Router
 - **Charts**: Recharts
 - **Maps**: React Leaflet
-- **Native Wrap**: Capacitor
+- **Native Wrap**: Capacitora
 
 ## 🛠️ Local Development
 
