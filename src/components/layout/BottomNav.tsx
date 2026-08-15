@@ -6,14 +6,17 @@ import {
   Clock,
   Map,
   BarChart3,
+  Settings as SettingsIcon,
 } from 'lucide-react';
+
+import { soundFx } from '../../lib/sound';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/vehicles', label: 'Vehicles', icon: Car },
   { path: '/history', label: 'History', icon: Clock },
-  { path: '/map', label: 'Map', icon: Map },
   { path: '/reports', label: 'Reports', icon: BarChart3 },
+  { path: '/settings', label: 'Settings', icon: SettingsIcon },
 ];
 
 export default function BottomNav() {
@@ -22,6 +25,7 @@ export default function BottomNav() {
   const [bouncingPath, setBouncingPath] = useState<string | null>(null);
 
   const handleNav = (path: string) => {
+    soundFx.playClickSound();
     setBouncingPath(path);
     setTimeout(() => setBouncingPath(null), 500);
     navigate(path);

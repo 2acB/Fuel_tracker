@@ -4,6 +4,8 @@ import { useVehicleStore } from '../../store/vehicle-store';
 import type { FuelType } from '../../types';
 import { FUEL_LABELS } from '../../types';
 
+import { soundFx } from '../../lib/sound';
+
 interface Props {
   onClose: () => void;
   editId?: string | null;
@@ -47,6 +49,8 @@ export default function VehicleForm({ onClose, editId }: Props) {
     } else {
       addVehicle(data as any);
     }
+
+    soundFx.playEngineSound();
     onClose();
   };
 

@@ -57,13 +57,24 @@ export default function Settings() {
 
       {/* Data Management */}
       <div className="section">
-        <div className="section-title">Data</div>
+        <div className="section-title">Account & Data</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button className="btn btn-secondary btn-block" onClick={handleExportData}>
             <Download size={18} /> Export Data (JSON)
           </button>
-          <button className="btn btn-danger btn-block" onClick={handleClearData}>
-            <Trash2 size={18} /> Clear All Data
+          <button 
+            className="btn btn-danger btn-block" 
+            onClick={async () => {
+              if (confirm('Are you sure you want to sign out?')) {
+                const { useAuthStore } = await import('../store/auth-store');
+                useAuthStore.getState().signOut();
+              }
+            }}
+          >
+            Sign Out
+          </button>
+          <button className="btn btn-danger btn-block" onClick={handleClearData} style={{ background: 'transparent', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+            <Trash2 size={18} /> Clear Local Data
           </button>
         </div>
       </div>

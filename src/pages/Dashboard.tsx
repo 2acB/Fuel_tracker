@@ -39,34 +39,34 @@ export default function Dashboard() {
   return (
     <div>
       <div className="page-header">
-        <div className="page-title">Dashboard</div>
-        <div className="page-subtitle">Your fuel tracking overview</div>
+        <div className="page-title">PADDOCK TELEMETRY</div>
+        <div className="page-subtitle">Trackside Fuel Performance & Analytics</div>
       </div>
 
       {/* Stat Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 20 }}>
         <StatCard
-          icon={<span>💰</span>}
+          icon={<span>🏁</span>}
           value={formatTHB(stats.totalSpend)}
-          label="This Month"
+          label="PIT SPEND"
           color="orange"
         />
         <StatCard
           icon={<span>⛽</span>}
           value={`${formatNumber(stats.totalLitres, 1)}L`}
-          label="Litres"
+          label="FUEL CAPACITY"
           color="blue"
         />
         <StatCard
-          icon={<span>📏</span>}
+          icon={<span>⚡</span>}
           value={stats.avgEfficiency > 0 ? `${stats.avgEfficiency.toFixed(1)}` : '—'}
-          label="Avg km/L"
+          label="PACE (km/L)"
           color="green"
         />
         <StatCard
-          icon={<span>🚗</span>}
+          icon={<span>🏎️</span>}
           value={stats.vehicleCount.toString()}
-          label="Vehicles"
+          label="GARAGE FLEET"
           color="purple"
         />
       </div>

@@ -42,4 +42,16 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  server: {
+    proxy: {
+      '/api/oil': {
+        target: 'https://query2.finance.yahoo.com/v8/finance/chart',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/oil/, ''),
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)',
+        },
+      },
+    },
+  },
 });

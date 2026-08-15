@@ -10,6 +10,8 @@ import { calculateLitres } from '../../lib/calculations';
 import type { FuelType, StationBrand } from '../../types';
 import { STATION_LABELS, FUEL_LABELS } from '../../types';
 
+import { soundFx } from '../../lib/sound';
+import Select from '../ui/Select';
 interface Props {
   onClose: () => void;
 }
@@ -98,6 +100,9 @@ export default function RefuelForm({ onClose }: Props) {
       notes: notes.trim() || undefined,
     });
 
+    // 🏎️ Play F1 Pit Stop sound FX
+    soundFx.playPitStopSound();
+
     // 🎉 Slime burst from save button
     if (saveBtnRef.current) {
       const rect = saveBtnRef.current.getBoundingClientRect();
@@ -113,7 +118,7 @@ export default function RefuelForm({ onClose }: Props) {
       <div className="sheet">
         <div className="sheet-handle" />
         <div className="sheet-header">
-          <span className="sheet-title">⛽ Log Refuel</span>
+          <span className="sheet-title">🏎️ PIT STOP LOG CONSOLE</span>
           <button className="btn-ghost" onClick={onClose}><X size={20} /></button>
         </div>
         <div className="sheet-body">
@@ -121,8 +126,7 @@ export default function RefuelForm({ onClose }: Props) {
           {vehicles.length > 1 && (
             <div className="form-group">
               <label className="form-label">Vehicle</label>
-              <select
-                className="form-input"
+              <Select
                 value={vehicleId}
                 onChange={(e) => setVehicleId(e.target.value)}
               >
@@ -131,7 +135,7 @@ export default function RefuelForm({ onClose }: Props) {
                     {v.avatar_emoji} {v.name}
                   </option>
                 ))}
-              </select>
+              </Select>
             </div>
           )}
 
@@ -168,8 +172,7 @@ export default function RefuelForm({ onClose }: Props) {
           {/* Fuel Type */}
           <div className="form-group">
             <label className="form-label">Fuel Type</label>
-            <select
-              className="form-input"
+            <Select
               value={fuelType}
               onChange={(e) => setFuelType(e.target.value as FuelType)}
             >
@@ -178,14 +181,13 @@ export default function RefuelForm({ onClose }: Props) {
                   {FUEL_LABELS[ft]}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {/* Station Brand */}
           <div className="form-group">
             <label className="form-label">Station Brand</label>
-            <select
-              className="form-input"
+            <Select
               value={stationBrand}
               onChange={(e) => setStationBrand(e.target.value as StationBrand | '')}
             >
@@ -195,7 +197,7 @@ export default function RefuelForm({ onClose }: Props) {
                   {STATION_LABELS[sb]}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           {/* Full Tank Toggle */}
@@ -300,7 +302,7 @@ export default function RefuelForm({ onClose }: Props) {
             style={{ marginTop: 8 }}
             id="save-refuel-btn"
           >
-            Save Refuel
+            CONFIRM PIT STOP
           </button>
         </div>
       </div>

@@ -74,6 +74,8 @@ export interface RefuelSession {
   notes?: string;
   receipt_url?: string;
   efficiency_kml?: number; // km/L calculated on save
+  status?: 'DRAFT' | 'CONFIRMED';
+  sync_status?: 'PENDING' | 'SYNCED';
   created_at: string;
 }
 

@@ -15,6 +15,17 @@ export default function AppShell({ children }: Props) {
 
   return (
     <div className="app-shell">
+      {/* F1 Pit-Wall Top Header */}
+      <div className="pitwall-header">
+        <div className="pitwall-logo">
+          <span>🏎️</span> FUELTRACK <span className="pitwall-badge">F1</span>
+        </div>
+        <div className="pitwall-status">
+          <div className="status-led" />
+          <span>PIT-WALL LIVE</span>
+        </div>
+      </div>
+
       <div className="page-content">{children}</div>
       <FAB />
       <BottomNav />

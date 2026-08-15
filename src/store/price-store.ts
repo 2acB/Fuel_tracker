@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { FuelType, FuelPrice, StationBrand } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface PriceState {
   prices: FuelPrice[];
@@ -22,53 +23,30 @@ export const usePriceStore = create<PriceState>()(
       fetchPrices: async () => {
         set({ isLoading: true, error: null });
         try {
-          const res = await fetch(API_URL);
-          const data = await res.json();
+          const { data, error } = await supabase
+            .from('fuel_prices')
+            .select('*')
+            .order('effective_date', { ascending: false })
+            .limit(100);
 
-          if (data.status !== 'success') throw new Error('API returned error');
+          if (error) throw error;
+          if (!data || data.length === 0) {
+            // No data in Supabase yet, we could trigger the edge function here manually
+            // or just rely on DEFAULT_FUEL_PRICES.
+            throw new Error('No prices found in database');
+          }
 
-          const stations = data.response.stations;
-          const date = data.response.date;
-          const newPrices: FuelPrice[] = [];
+          // We want the latest price for each (station_brand, fuel_type)
+          const latestPricesMap = new Map<string, FuelPrice>();
+          
+          for (const record of data) {
+            const key = `${record.station_brand}-${record.fuel_type}`;
+            if (!latestPricesMap.has(key)) {
+              latestPricesMap.set(key, record as FuelPrice);
+            }
+          }
 
-          // Map API keys to our internal keys
-          const stationMap: Record<string, StationBrand> = {
-            ptt: 'ptt',
-            bcp: 'bangchak',
-            shell: 'shell',
-            caltex: 'caltex',
-            esso: 'esso',
-            susco: 'susco',
-          };
-
-          const fuelMap: Record<string, FuelType> = {
-            gasohol_95: 'gasohol_95',
-            gasohol_91: 'gasohol_91',
-            gasohol_e20: 'gasohol_e20',
-            gasohol_e85: 'gasohol_e85',
-            diesel: 'diesel',
-            premium_diesel: 'premium_diesel',
-            diesel_b7: 'diesel', // Map B7 to standard diesel if needed
-          };
-
-          Object.entries(stations).forEach(([sKey, sData]: [string, any]) => {
-            const stationBrand = stationMap[sKey];
-            if (!stationBrand) return;
-
-            Object.entries(sData).forEach(([fKey, fData]: [string, any]) => {
-              const fuelType = fuelMap[fKey];
-              if (!fuelType) return;
-
-              newPrices.push({
-                id: `${sKey}-${fKey}-${date}`,
-                fuel_type: fuelType,
-                price_thb: Number((parseFloat(fData.price) + 0.05).toFixed(2)),
-                station_brand: stationBrand,
-                effective_date: date,
-                source_url: API_URL,
-              });
-            });
-          });
+          const newPrices = Array.from(latestPricesMap.values());
 
           set({ prices: newPrices, lastFetched: new Date().toISOString(), isLoading: false });
         } catch (err: any) {
