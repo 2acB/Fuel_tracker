@@ -39,6 +39,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   signOut: async () => {
     set({ loading: true });
     await supabase.auth.signOut();
+    
+    // Clear persisted local data
+    localStorage.removeItem('fueltrack-vehicles');
+    localStorage.removeItem('fueltrack-refuels');
+    localStorage.removeItem('fueltrack-price-store');
+    
     set({ session: null, user: null, loading: false });
+    
+    // Force a full reload to clear all in-memory Zustand states
+    window.location.href = '/auth';
   }
 }));

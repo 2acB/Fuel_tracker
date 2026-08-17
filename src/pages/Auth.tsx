@@ -38,7 +38,11 @@ export default function Auth() {
         navigate('/', { replace: true });
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication.');
+      if (err?.code === 'over_email_send_rate_limit') {
+        setError('Too many sign-ups in a short time. Please wait an hour or disable "Confirm email" in your Supabase dashboard to bypass this.');
+      } else {
+        setError(err.message || 'An error occurred during authentication.');
+      }
     } finally {
       setLoading(false);
     }
