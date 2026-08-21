@@ -70,7 +70,16 @@ export const useVehicleStore = create<VehicleState>()(
 
         const { data, error } = await supabase.from('vehicles').select('*');
         if (!error && data) {
-          set({ vehicles: data, activeVehicleId: data.length > 0 ? data[0].id : null });
+          set(state => {
+            const pending = state.vehicles.filter(v => (v as any).sync_status === 'PENDING');
+            const merged = [...data];
+            pending.forEach(p => {
+              if (!merged.find(m => m.id === p.id)) merged.push(p);
+            });
+            return { vehicles: merged, activeVehicleId: merged.length > 0 ? merged[0].id : null };
+          });
+          
+          setTimeout(() => get().syncPending(), 100);
         }
       },
 

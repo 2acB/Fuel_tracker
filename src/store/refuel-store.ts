@@ -92,8 +92,14 @@ export const useRefuelStore = create<RefuelState>()(
           // (assuming no pending offline drafts are overwritten without care)
           set(state => {
             const pending = state.sessions.filter(s => s.sync_status === 'PENDING');
-            return { sessions: [...data, ...pending] };
+            const merged = [...data];
+            pending.forEach(p => {
+              if (!merged.find(m => m.id === p.id)) merged.push(p);
+            });
+            return { sessions: merged };
           });
+          
+          setTimeout(() => get().syncPending(), 100);
         }
       },
 
@@ -110,7 +116,7 @@ export const useRefuelStore = create<RefuelState>()(
 
         // Upsert all pending sessions
         for (const session of pendingSessions) {
-          const { sync_status, ...dbSession } = session; // Remove local-only fields
+          const { sync_status, efficiency_kml, ...dbSession } = session; // Remove local-only fields
           
           // Ensure correct user_id
           dbSession.user_id = userData.user.id;

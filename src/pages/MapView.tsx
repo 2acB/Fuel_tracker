@@ -7,14 +7,19 @@ import { Map as MapIcon } from 'lucide-react';
 // Dynamically import Leaflet to avoid SSR issues
 let L: typeof import('leaflet') | null = null;
 
-export default function MapView() {
+interface MapViewProps {
+  hideHeader?: boolean;
+  filterVehicleId?: string;
+}
+
+export default function MapView({ hideHeader, filterVehicleId }: MapViewProps = {}) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
   const { sessions } = useRefuelStore();
   const { vehicles } = useVehicleStore();
   const [ready, setReady] = useState(false);
 
-  const sessionsWithGps = sessions.filter((s) => s.lat != null && s.lng != null);
+  const sessionsWithGps = sessions.filter((s) => s.lat != null && s.lng != null && (!filterVehicleId || s.vehicle_id === filterVehicleId));
 
   useEffect(() => {
     // Dynamic import of Leaflet
@@ -103,10 +108,12 @@ export default function MapView() {
   if (sessionsWithGps.length === 0) {
     return (
       <div>
-        <div className="page-header">
-          <div className="page-title">Map</div>
-          <div className="page-subtitle">Refuel station locations</div>
-        </div>
+        {!hideHeader && (
+          <div className="page-header">
+            <div className="page-title">Map</div>
+            <div className="page-subtitle">Refuel station locations</div>
+          </div>
+        )}
         <div className="empty-state">
           <div className="empty-icon"><MapIcon size={48} strokeWidth={1.2} /></div>
           <div className="empty-title">No Locations Yet</div>
@@ -118,10 +125,12 @@ export default function MapView() {
 
   return (
     <div>
-      <div className="page-header">
-        <div className="page-title">Map</div>
-        <div className="page-subtitle">{sessionsWithGps.length} location{sessionsWithGps.length !== 1 ? 's' : ''}</div>
-      </div>
+      {!hideHeader && (
+        <div className="page-header">
+          <div className="page-title">Map</div>
+          <div className="page-subtitle">{sessionsWithGps.length} location{sessionsWithGps.length !== 1 ? 's' : ''}</div>
+        </div>
+      )}
       <div
         ref={mapRef}
         style={{

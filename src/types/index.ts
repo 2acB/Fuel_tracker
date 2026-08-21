@@ -2,6 +2,7 @@
 export type FuelType =
   | 'gasohol_91'
   | 'gasohol_95'
+  | 'premium_gasohol_95'
   | 'gasohol_e20'
   | 'gasohol_e85'
   | 'diesel'
@@ -10,6 +11,7 @@ export type FuelType =
 export const FUEL_LABELS: Record<FuelType, string> = {
   gasohol_91: 'Gasohol 91',
   gasohol_95: 'Gasohol 95',
+  premium_gasohol_95: 'Premium Gasohol 95',
   gasohol_e20: 'Gasohol E20',
   gasohol_e85: 'Gasohol E85',
   diesel: 'Diesel B7',
@@ -19,6 +21,7 @@ export const FUEL_LABELS: Record<FuelType, string> = {
 export const FUEL_COLORS: Record<FuelType, string> = {
   gasohol_91: '#22c55e',
   gasohol_95: '#3b82f6',
+  premium_gasohol_95: '#2563eb',
   gasohol_e20: '#a855f7',
   gasohol_e85: '#ec4899',
   diesel: '#f59e0b',

@@ -1,10 +1,13 @@
 import { useVehicleStore } from '../store/vehicle-store';
 import { useRefuelStore } from '../store/refuel-store';
-import { Settings as SettingsIcon, Trash2, Download, Info } from 'lucide-react';
+import { useAuthStore } from '../store/auth-store';
+import { Settings as SettingsIcon, Trash2, Download, Info, Mail } from 'lucide-react';
 
 export default function Settings() {
   const { vehicles } = useVehicleStore();
   const { sessions } = useRefuelStore();
+  const { user } = useAuthStore();
+
 
   const handleExportData = () => {
     const data = { vehicles, sessions, exportedAt: new Date().toISOString() };
@@ -55,9 +58,23 @@ export default function Settings() {
         </div>
       </div>
 
+
       {/* Data Management */}
       <div className="section">
         <div className="section-title">Account & Data</div>
+        
+        {user && (
+          <div className="card" style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Mail size={18} color="var(--text-main)" />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Signed in as</span>
+              <span style={{ fontSize: 14, fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.email || 'No email provided'}</span>
+            </div>
+          </div>
+        )}
+
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <button className="btn btn-secondary btn-block" onClick={handleExportData}>
             <Download size={18} /> Export Data (JSON)
